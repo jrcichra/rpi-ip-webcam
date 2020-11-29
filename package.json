@@ -10,20 +10,21 @@
   },
   "dependencies": {
     "@nuxtjs/axios": "^5.12.2",
-    "bootstrap": "^4.5.2",
-    "bootstrap-vue": "^2.17.3",
-    "core-js": "^3.6.5",
-    "nuxt": "^2.14.6",
+    "bootstrap": "^4.5.3",
+    "bootstrap-vue": "^2.19.0",
+    "core-js": "^3.8.0",
+    "nuxt": "^2.14.7",
     "vue": "^2.6.12",
-    "vuedraggable": "^2.24.1"
+    "vue-carousel": "^0.18.0",
+    "vuedraggable": "^2.24.3"
   },
   "devDependencies": {
-    "@fortawesome/free-brands-svg-icons": "^5.14.0",
-    "@fortawesome/free-regular-svg-icons": "^5.14.0",
-    "@fortawesome/free-solid-svg-icons": "^5.14.0",
+    "@fortawesome/free-brands-svg-icons": "^5.15.1",
+    "@fortawesome/free-regular-svg-icons": "^5.15.1",
+    "@fortawesome/free-solid-svg-icons": "^5.15.1",
     "@nuxtjs/fontawesome": "^1.1.2",
-    "moment": "^2.29.0",
-    "node-sass": "^4.14.1",
-    "sass-loader": "^10.0.2"
+    "moment": "^2.29.1",
+    "node-sass": "^5.0.0",
+    "sass-loader": "^10.1.0"
   }
 }

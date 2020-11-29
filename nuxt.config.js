@@ -16,6 +16,7 @@ export default {
             regular: true,
         }
     },
+    plugins: [{ src: './plugins/vue-carousel.js', mode: 'client' }],
     // router: {
     //     base: '/dist/'
     // }

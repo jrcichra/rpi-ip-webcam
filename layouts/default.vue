@@ -8,6 +8,7 @@ export default {};
 html,
 body {
   height: 100%;
+  background-color: rgb(41, 39, 39);
 }
 #__nuxt {
   height: 100%;

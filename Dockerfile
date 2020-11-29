@@ -6,4 +6,5 @@ COPY pages ./pages
 COPY layouts ./layouts
 COPY assets ./assets
 COPY components ./components
+COPY plugins ./plugins
 CMD yarn dev

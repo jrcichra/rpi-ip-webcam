@@ -1,6 +1,8 @@
 <template>
   <div id="app">
-  <h1> Hello world! </h1>
+    <NavBar />
+    <Player />
+    <Carousel />
   </div>
 </template>
 
