@@ -7,6 +7,7 @@ docker run -it -d\
     -v ${PWD}/assets:/app/assets\
     -v ${PWD}/layouts:/app/layouts\
     -v ${PWD}/plugins:/app/plugins\
+    -v ${PWD}/store:/app/store\
     -v ${PWD}/nuxt.config.js:/app/nuxt.config.js\
     --restart=unless-stopped\
     jrcichra/nuxt-template

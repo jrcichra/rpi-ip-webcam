@@ -12,7 +12,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	socketio "github.com/googollee/go-socket.io"
 	"github.com/lestrrat-go/strftime"
@@ -26,11 +25,29 @@ const (
 	PATH = "/home/pi/recordings"
 )
 
+func ginMiddleware(allowOrigin string) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.Writer.Header().Set("Access-Control-Allow-Origin", allowOrigin)
+		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
+		c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT, DELETE")
+		c.Writer.Header().Set("Access-Control-Allow-Headers", "Accept, Authorization, Content-Type, Content-Length, X-CSRF-Token, Token, session, Origin, Host, Connection, Accept-Encoding, Accept-Language, X-Requested-With")
+
+		if c.Request.Method == "OPTIONS" {
+			c.AbortWithStatus(204)
+			return
+		}
+
+		c.Request.Header.Del("Origin")
+
+		c.Next()
+	}
+}
+
 // take a picture
-func capture(f *strftime.Strftime) {
+func capture(f *strftime.Strftime, liveFeed chan string) {
 	log.Println("Running capture.sh...")
 	hour, _, _ := time.Now().Clock()
-	filename := fmt.Sprintf("%s/%d/%s.jpg", PATH, hour, f.FormatString(time.Now()))
+	filename := fmt.Sprintf("%s/%02d/%s.jpg", PATH, hour, f.FormatString(time.Now()))
 	out, err := exec.Command("/home/pi/capture/capture.sh", filename).CombinedOutput()
 	if strings.TrimSpace(string(out)) != "" {
 		log.Println(string(out))
@@ -38,9 +55,15 @@ func capture(f *strftime.Strftime) {
 	if err != nil {
 		log.Println(err)
 	}
+	_, err = os.Stat(filename)
+	if !os.IsNotExist(err) {
+		// do this in prod
+		//liveFeed <- filename
+	}
+	liveFeed <- "/home/pi/recordings/23/2020_11_29_23_54_13.jpg" //filename
 }
 
-func loop(interval time.Duration) {
+func loop(interval time.Duration, liveFeed chan string) {
 	ticker := time.NewTicker(interval)
 	f, err := strftime.New("%Y_%m_%d_%H_%M_%S")
 	if err != nil {
@@ -49,7 +72,14 @@ func loop(interval time.Duration) {
 	for {
 		<-ticker.C
 		//spawn a process to capture the picture in the background
-		go capture(f)
+		go capture(f, liveFeed)
+	}
+}
+
+func sendFeedUpdates(liveFeed chan string, sio *socketio.Server) {
+	for {
+		path := <-liveFeed
+		sio.BroadcastToRoom("", "users", "live", path)
 	}
 }
 
@@ -61,13 +91,21 @@ func web() {
 	server.OnConnect("/", func(s socketio.Conn) error {
 		s.SetContext("")
 		fmt.Println("connected:", s.ID())
+		s.Join("users")
 		return nil
 	})
+	// channel for new images from the camera
+	liveFeed := make(chan string, 0)
+	// start taking pictures
+	go loop(INTERVAL*time.Second, liveFeed)
+	// make the socket.io handler for these messages
+	go sendFeedUpdates(liveFeed, server)
 	go server.Serve()
 	defer server.Close()
 
 	r := gin.Default()
-	r.Use(cors.Default())
+
+	r.Use(ginMiddleware("http://localhost:3000"))
 
 	//vue serve workaround
 	r.GET("/", func(c *gin.Context) {
@@ -162,8 +200,6 @@ func web() {
 }
 
 func main() {
-	// start taking pictures
-	go loop(INTERVAL * time.Second)
 	//set up and block on web server forever
 	web()
 }

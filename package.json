@@ -14,9 +14,8 @@
     "bootstrap-vue": "^2.19.0",
     "core-js": "^3.8.0",
     "nuxt": "^2.14.7",
-    "vue": "^2.6.12",
-    "vue-carousel": "^0.18.0",
-    "vuedraggable": "^2.24.3"
+    "nuxt-socket-io": "^1.1.13",
+    "vue": "^2.6.12"
   },
   "devDependencies": {
     "@fortawesome/free-brands-svg-icons": "^5.15.1",
