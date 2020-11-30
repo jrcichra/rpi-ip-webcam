@@ -13,19 +13,17 @@
 <script>
 export default {
   name: "NavBar",
-  props: {
-    msg: String,
-  },
+  props: {},
 };
 </script>
 
 <style scoped>
 .navbar {
   background-color: rgb(212, 38, 38);
-  padding: 0.7rem;
+  padding: 0.3rem;
 }
 .title {
-  font-size: 2rem;
+  font-size: 1.5rem;
   margin-top: 0.6rem;
 }
 .nolink {

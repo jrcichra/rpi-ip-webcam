@@ -15,8 +15,10 @@ export default {
             solid: true,
             regular: true,
         }
-    },
-    plugins: [{ src: './plugins/vue-carousel.js', mode: 'client' }],
+    }, plugins: [
+        '@/plugins/axios',
+    ],
+    ssr: false // Disable Server Side rendering
     // router: {
     //     base: '/dist/'
     // }

@@ -4,11 +4,15 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"net/http"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"sort"
+	"strings"
 	"time"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	socketio "github.com/googollee/go-socket.io"
 	"github.com/lestrrat-go/strftime"
@@ -24,10 +28,13 @@ const (
 
 // take a picture
 func capture(f *strftime.Strftime) {
+	log.Println("Running capture.sh...")
 	hour, _, _ := time.Now().Clock()
 	filename := fmt.Sprintf("%s/%d/%s.jpg", PATH, hour, f.FormatString(time.Now()))
 	out, err := exec.Command("/home/pi/capture/capture.sh", filename).CombinedOutput()
-	log.Println(string(out))
+	if strings.TrimSpace(string(out)) != "" {
+		log.Println(string(out))
+	}
 	if err != nil {
 		log.Println(err)
 	}
@@ -60,33 +67,73 @@ func web() {
 	defer server.Close()
 
 	r := gin.Default()
+	r.Use(cors.Default())
+
+	//vue serve workaround
+	r.GET("/", func(c *gin.Context) {
+		c.Redirect(http.StatusMovedPermanently, "vue/")
+	})
+	r.Static("/vue", "./vue/")
+
 	// Sanity GET request
 	r.GET("/ping", func(c *gin.Context) {
 		c.JSON(200, gin.H{
 			"message": "pong",
 		})
 	})
-	// Get a list of images on the filesystem, newest first
-	r.GET("/images", func(c *gin.Context) {
-		matches, err := filepathx.Glob("/home/pi/recordings/*/*.jpg")
+	// hostname
+	r.GET("/hostname", func(c *gin.Context) {
+		name, err := os.Hostname()
 		if err != nil {
 			panic(err)
 		}
-		matchesMtime := make([]time.Time, len(matches))
-		for i, match := range matches {
-			fileinfo, err := os.Stat(match)
+		c.JSON(200, gin.H{
+			"hostname": name,
+		})
+	})
+	// Get a list of images on the filesystem, newest first
+	r.GET("/images", func(c *gin.Context) {
+		files, err := filepathx.Glob("/home/pi/recordings/*/*.jpg")
+		if err != nil {
+			panic(err)
+		}
+		type Match struct {
+			name string
+			date time.Time
+		}
+
+		matches := make([]*Match, len(files))
+		for i, f := range files {
+			path, file := filepath.Split(f)
+			if strings.Contains(path, "tmp") {
+				//skip tmp pictures
+				continue
+			}
+			base := strings.ReplaceAll(strings.ReplaceAll(strings.ReplaceAll(file, "mon_", ""), ".jpg", ""), "~", "")
+			t1, err := time.Parse("2006_01_02_15_04_05", base)
 			if err != nil {
 				panic(err)
 			}
-			matchesMtime[i] = fileinfo.ModTime()
+			matches[i] = &Match{f, t1}
 		}
+
+		loc, err := time.LoadLocation("America/New_York")
+		if err != nil {
+			panic(err)
+		}
+		time.Local = loc
+
 		sort.SliceStable(matches, func(i, j int) bool {
-			// After gives us newest first
-			return matchesMtime[i].After(matchesMtime[j])
+			return matches[i].date.After(matches[j].date)
 		})
 
+		results := make([]string, len(files))
+		for i, m := range matches {
+			results[i] = m.name
+		}
+
 		c.JSON(200, gin.H{
-			"images": matches,
+			"images": results,
 		})
 	})
 	// Request to download a specific image
@@ -110,10 +157,8 @@ func web() {
 	})
 	r.GET("/socket.io/*any", gin.WrapH(server))
 	r.POST("/socket.io/*any", gin.WrapH(server))
-	//vue serve
-	r.Static("/", "./vue/")
 	//block on http serve
-	r.Run(":8090")
+	r.Run(":80")
 }
 
 func main() {
