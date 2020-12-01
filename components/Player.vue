@@ -29,6 +29,7 @@ export default {
 }
 #player {
   margin-top: 1rem;
+  margin-left: 5rem;
   display: block;
   margin-bottom: 1rem;
   color: white;

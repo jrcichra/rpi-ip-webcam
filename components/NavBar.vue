@@ -27,7 +27,7 @@ export default {
 }
 .title {
   font-size: 1.5rem;
-  margin-top: 0.6rem;
+  margin-top: 0.3rem;
   margin-left: 2rem;
 }
 .nolink {

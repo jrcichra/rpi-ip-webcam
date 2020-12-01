@@ -58,9 +58,8 @@ func capture(f *strftime.Strftime, liveFeed chan string) {
 	_, err = os.Stat(filename)
 	if !os.IsNotExist(err) {
 		// do this in prod
-		//liveFeed <- filename
+		liveFeed <- filename
 	}
-	liveFeed <- "/home/pi/recordings/23/2020_11_29_23_54_13.jpg" //filename
 }
 
 func loop(interval time.Duration, liveFeed chan string) {

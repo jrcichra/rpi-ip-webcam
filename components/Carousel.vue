@@ -2,11 +2,11 @@
   <b-container id="carousel" class="shadow" fluid @scroll="scrolled">
     <b-row>
       <Card
-        v-for="picture in frame"
-        :key="picture.id"
+        v-for="(picture, index) in frame"
+        :key="index"
         :picture="picture"
-        :selected="isSelected(picture)"
-        @clicked="wasSelected(picture)"
+        :selected="isSelected(index)"
+        @clicked="wasSelected(index)"
       />
     </b-row>
   </b-container>
@@ -22,13 +22,13 @@ export default {
         right: 39,
         down: 40,
       },
-      frame: [],
-      selectedPicture: "",
+      selectedIndex: "",
       //only keep n image elements around at a time.
       //These are the current bounds that will change
+      frame: [],
       lowerBound: 0,
       upperBound: 100,
-      step: 20,
+      step: 10,
     };
   },
   props: {
@@ -36,7 +36,12 @@ export default {
   },
   watch: {
     pictures: function () {
-      this.frame = this.pictures.slice(this.lowerBound, this.upperBound);
+      this.newFrame();
+      this.selectedIndex = "";
+      this.lowerBound = 0;
+      this.upperBound = 100;
+      //TODO: how to scroll to the top of the pane when we reset images
+      // this.$el.scrollIntoView(true);
     },
   },
   mounted() {
@@ -45,15 +50,11 @@ export default {
     window.addEventListener("keydown", (e) => {
       console.log(e.keyCode);
       if (e.keyCode == this.arrows.right) {
-        //find the index of who we are
-        let us = this.pictures.indexOf(this.selectedPicture);
         //set selected to the next image in the list
-        this.wasSelected(this.pictures[us + 1]);
+        this.wasSelected(this.selectedIndex + 1);
       } else if (e.keyCode == this.arrows.left) {
-        //find the index of who we are
-        let us = this.pictures.indexOf(this.selectedPicture);
         //set selected to the previous image in the list
-        this.wasSelected(this.pictures[us - 1]);
+        this.wasSelected(this.selectedIndex - 1);
       }
     });
   },
@@ -62,37 +63,53 @@ export default {
   },
 
   methods: {
-    isSelected: function (picture) {
-      return picture === this.selectedPicture;
+    isSelected: function (index) {
+      return index === this.selectedIndex;
     },
-    wasSelected: function (picture) {
-      this.selectedPicture = picture;
-      this.$emit("changed", picture);
+    wasSelected: function (index) {
+      this.selectedIndex = index;
+      this.$emit("changed", this.pictures[index]);
     },
     scrolled: function (asdf) {
       let currY = this.$el.scrollTop;
       let postHeight = this.$el.clientHeight;
       let scrollHeight = this.$el.firstChild.clientHeight;
       let percent = (currY / (scrollHeight - postHeight)) * 100;
-      console.log(percent);
-      if (percent >= 75.0) {
+      console.log(`percent: ${percent.toFixed(0)}, bottomed: ${this.bottomed}`);
+      if (percent >= 90.0) {
         this.scrolledDown();
-      } else if (percent <= 15.0) {
-        // this.scrolledUp();
       }
     },
+    newFrame: function () {
+      this.frame = this.pictures.slice(this.lowerBound, this.upperBound);
+    },
+    downFrame: function () {},
     scrolledDown: function () {
-      //change our view
+      //update our pointers
       this.lowerBound += this.step;
       this.upperBound += this.step;
+      // add this.step to the bottom
+      //remove this.step from the top
       this.frame = this.frame.concat(
-        this.pictures.slice(this.lowerBound, this.upperBound)
+        this.pictures.slice(this.upperBound - this.step, this.upperBound)
       );
+      // this.frame = this.frame.slice(this.step);
+      // this.newFrame();
+      //set the scroll to make them think they went down?
+      // this.$el.scrollTop -= 100;
+
+      console.log("wentdown");
     },
     scrolledUp: function () {
       //change our view
-      this.lowerBound -= this.step;
-      this.upperBound -= this.step;
+      if (this.lowerBound > 0) {
+        this.lowerBound -= this.step;
+        this.upperBound -= this.step;
+        this.offset -= this.step;
+        this.newFrame();
+      }
+      console.log("wentup");
+      // this.frame.splice();
     },
   },
 };
@@ -107,5 +124,6 @@ export default {
   color: white;
   overflow-y: scroll;
   height: calc(100% - 38rem);
+  content-visibility: auto;
 }
 </style>
