@@ -48,7 +48,14 @@ export default {
     });
     this.socket.on("live", (msg, cb) => {
       console.log(`got a live socket.io packet: ${msg}`);
+      //make this the live image
       this.live = msg;
+      //only add it to the existing view if the first picture matches the first in all pictures, meaning they're at the top of the list
+      if (this.allPictures[0] == this.pictures[0]) {
+        this.pictures.unshift(msg);
+      }
+      //regardless, add it to the pictures list. This should solve the previous condition if nothing changes
+      this.allPictures.unshift(msg);
     });
   },
   data() {

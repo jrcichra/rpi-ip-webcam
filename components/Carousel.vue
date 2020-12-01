@@ -46,7 +46,7 @@ export default {
   },
   mounted() {
     window.removeEventListener("keypress", this._keyListener);
-    window.removeEventListener("keypress", this._keyListener);
+    window.removeEventListener("keydown", this._keyListener);
     window.addEventListener("keydown", (e) => {
       console.log(e.keyCode);
       if (e.keyCode == this.arrows.right) {

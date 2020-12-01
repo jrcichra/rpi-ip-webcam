@@ -6,6 +6,10 @@
           id="content"
           :src="`http://secpi.pk5001z:8090/image?name=${live}`"
           alt=""
+          v-bind:class="{ zoomed: clicked, hovered: hover }"
+          @click="wasClicked"
+          @mouseenter="hover = true"
+          @mouseleave="hover = false"
         />
         <p v-if="showLive" id="icon">🔴</p>
         <p id="label">Live</p>
@@ -23,6 +27,8 @@ export default {
     return {
       showLive: true,
       showLiveInterval: undefined,
+      clicked: false,
+      hover: false,
     };
   },
   created() {
@@ -32,6 +38,11 @@ export default {
   },
   destroyed() {
     clearInterval(this.showLiveInterval);
+  },
+  methods: {
+    wasClicked: function (event) {
+      this.clicked = !this.clicked;
+    },
   },
 };
 </script>
@@ -61,5 +72,14 @@ export default {
 #label {
   left: 4.6rem;
   top: 1.05rem;
+}
+.zoomed {
+  position: absolute;
+  zoom: 200%;
+  left: -22rem;
+  z-index: 5;
+}
+.hovered {
+  border: 0.2rem solid azure !important;
 }
 </style>
