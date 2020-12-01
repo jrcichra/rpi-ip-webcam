@@ -4,7 +4,7 @@
       <b-col>
         <img
           id="content"
-          :src="`http://secpi.pk5001z/image?name=${picture}`"
+          :src="`http://secpi.pk5001z:8090/image?name=${picture}`"
           alt=""
         />
       </b-col>

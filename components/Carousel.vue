@@ -106,6 +106,6 @@ export default {
   margin-bottom: 1rem;
   color: white;
   overflow-y: scroll;
-  height: calc(100% - 40rem);
+  height: calc(100% - 38rem);
 }
 </style>

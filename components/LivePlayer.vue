@@ -4,7 +4,7 @@
       <b-col>
         <img
           id="content"
-          :src="`http://secpi.pk5001z/image?name=${live}`"
+          :src="`http://secpi.pk5001z:8090/image?name=${live}`"
           alt=""
         />
         <p id="label">🔴 Live</p>

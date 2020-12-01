@@ -53,7 +53,7 @@ export default {
       this.picture = picture;
     },
     getPictures() {
-      this.$axios.get(`http://secpi.pk5001z/images`).then((response) => {
+      this.$axios.get(`http://secpi.pk5001z:8090/images`).then((response) => {
         console.log(response.data.images);
         this.pictures = response.data.images;
         this.picture = this.pictures[0];
@@ -61,7 +61,7 @@ export default {
       });
     },
     getHostname() {
-      this.$axios.get(`http://secpi.pk5001z/hostname`).then((response) => {
+      this.$axios.get(`http://secpi.pk5001z:8090/hostname`).then((response) => {
         console.log(response.data.hostname);
         this.hostname = response.data.hostname;
       });

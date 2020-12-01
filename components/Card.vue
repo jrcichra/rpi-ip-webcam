@@ -4,7 +4,7 @@
       id="card"
       v-bind="mainProps"
       v-bind:class="{ selected: selected }"
-      :src="`http://secpi.pk5001z/image?name=${picture}`"
+      :src="`http://secpi.pk5001z:8090/image?name=${picture}`"
     ></b-img>
   </b-col>
 </template>
