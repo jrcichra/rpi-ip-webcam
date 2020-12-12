@@ -6,7 +6,7 @@
       id="card"
       @load="loading = false"
       v-bind:class="{ selected: selected }"
-      :src="`http://secpi:8090/image?name=${this.picture}`"
+      :src="`http://secpi/image?name=${this.picture}`"
     ></b-img>
   </b-col>
 </template>

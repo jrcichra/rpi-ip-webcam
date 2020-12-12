@@ -23,7 +23,7 @@ export default {
         // module options
         sockets: [{
             name: 'main',
-            url: 'http://secpi:8090'
+            url: 'http://secpi'
         }]
     },
     target: 'static',
