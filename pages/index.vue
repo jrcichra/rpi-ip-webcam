@@ -137,6 +137,11 @@ export default {
       });
     },
   },
+  head() {
+    return {
+      title: `(${this.hostname}) - Raspberry Pi Camera Viewer`,
+    };
+  },
 };
 </script>
 

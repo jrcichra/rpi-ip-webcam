@@ -115,6 +115,18 @@ func web() {
 		c.Abort()
 	})
 
+	//favicon
+	r.GET("/favicon.ico", func(c *gin.Context) {
+		data, err := ioutil.ReadFile("../assets/favicon.ico")
+
+		if err != nil {
+			c.JSON(500, gin.H{
+				"error": fmt.Sprintf("Something went wrong when reading the image: %s", err),
+			})
+		}
+		c.Data(200, "image/x-icon", data)
+	})
+
 	// Sanity GET request
 	r.GET("/ping", func(c *gin.Context) {
 		c.JSON(200, gin.H{
