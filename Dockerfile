@@ -1,4 +1,5 @@
 FROM node:alpine
+RUN apk add python3
 WORKDIR /app
 COPY nuxt.config.js yarn.lock package.json LICENSE ./
 RUN yarn install

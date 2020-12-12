@@ -23,8 +23,14 @@ export default {
         // module options
         sockets: [{
             name: 'main',
-            url: 'http://secpi.pk5001z:8090'
+            url: 'http://secpi:8090'
         }]
     },
-    target: 'static'
+    target: 'static',
+    build: {
+        publicPath: '/vue/'
+    },
+    router: {
+        base: '/vue/'
+    }
 }

@@ -95,15 +95,18 @@ func web() {
 	// channel for new images from the camera
 	liveFeed := make(chan string, 0)
 	// start taking pictures
-	go loop(INTERVAL*time.Second, liveFeed)
+	//go loop(INTERVAL*time.Second, liveFeed)
 	// make the socket.io handler for these messages
 	go sendFeedUpdates(liveFeed, server)
 	go server.Serve()
 	defer server.Close()
 
 	r := gin.Default()
-	// r.Use(cors.Default())
-	r.Use(ginMiddleware("http://secpi.pk5001z"))
+	//r.Use(cors.Default())
+	// r.Use(ginMiddleware("http://localhost:3000"))
+
+	//serve vue content
+	r.Static("/vue", "../dist/")
 
 	// Sanity GET request
 	r.GET("/ping", func(c *gin.Context) {
@@ -188,7 +191,7 @@ func web() {
 	r.GET("/socket.io/*any", gin.WrapH(server))
 	r.POST("/socket.io/*any", gin.WrapH(server))
 	//block on http serve
-	r.Run(":81")
+	r.Run(":8090")
 }
 
 func main() {

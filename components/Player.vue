@@ -4,7 +4,7 @@
       <b-col>
         <img
           id="content"
-          :src="`http://secpi.pk5001z:8090/image?name=${picture}`"
+          :src="`http://secpi:8090/image?name=${picture}`"
           alt=""
           v-bind:class="{ zoomed: clicked, hovered: hover }"
           @click="wasClicked"
