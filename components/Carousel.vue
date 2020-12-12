@@ -27,7 +27,7 @@ export default {
       //These are the current bounds that will change
       frame: [],
       lowerBound: 0,
-      upperBound: 100,
+      upperBound: 40,
       step: 10,
     };
   },
@@ -39,7 +39,7 @@ export default {
       this.newFrame();
       this.selectedIndex = "";
       this.lowerBound = 0;
-      this.upperBound = 100;
+      this.upperBound = 40;
       //TODO: how to scroll to the top of the pane when we reset images
       // this.$el.scrollIntoView(true);
     },

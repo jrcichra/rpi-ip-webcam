@@ -54,8 +54,6 @@ export default {
       if (this.allPictures[0] == this.pictures[0]) {
         this.pictures.unshift(msg);
       }
-      //regardless, add it to the pictures list. This should solve the previous condition if nothing changes
-      this.allPictures.unshift(msg);
     });
   },
   data() {
