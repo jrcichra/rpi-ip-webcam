@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"net/http"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -107,6 +108,12 @@ func web() {
 
 	//serve vue content
 	r.Static("/vue", "../dist/")
+
+	//redirect / to /vue
+	r.GET("/", func(c *gin.Context) {
+		c.Redirect(http.StatusMovedPermanently, "/vue")
+		c.Abort()
+	})
 
 	// Sanity GET request
 	r.GET("/ping", func(c *gin.Context) {
