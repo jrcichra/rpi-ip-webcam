@@ -52,7 +52,8 @@ export default {
       this.live = msg;
       //only add it to the existing view if the first picture matches the first in all pictures, meaning they're at the top of the list
       if (this.allPictures[0] == this.pictures[0]) {
-        this.pictures.unshift(msg);
+        // TODO : Disabling so it doesn't shift the screen
+        // this.pictures.unshift(msg);
       }
     });
   },
