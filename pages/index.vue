@@ -28,7 +28,8 @@
         <b-button @click="findClosestImage"> Go </b-button>
       </b-col>
     </b-row>
-    <Carousel @changed="updatePlayer" :add="live" :pictures="pictures" />
+    <!-- <Carousel @changed="updatePlayer" :add="live" :pictures="pictures" /> -->
+    <Carousel @changed="updatePlayer" :pictures="pictures" />
   </div>
 </template>
 
