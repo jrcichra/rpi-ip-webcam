@@ -15,7 +15,7 @@
     "core-js": "^3.8.0",
     "nuxt": "^3.0.0",
     "nuxt-socket-io": "^1.1.13",
-    "vue": "^2.6.12"
+    "vue": "^3.0.0"
   },
   "devDependencies": {
     "@fortawesome/free-brands-svg-icons": "^5.15.1",
